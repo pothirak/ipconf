@@ -1,19 +1,28 @@
-@ECHO OFF
+if not "%1"=="am_admin" (powershell start -verb runas '%0' am_admin & exit /b)
+@echo off
 :BEGIN
-CLS
-echo =======IP Config Tool======= & echo.1) DHCP & echo.2) Fix IP & echo.3) Office IP
-CHOICE /N /C:123 /M "pick a number (1, 2, or 3)"%1
-IF ERRORLEVEL ==3 GOTO THREE
-IF ERRORLEVEL ==2 GOTO TWO
-IF ERRORLEVEL ==1 GOTO ONE
-GOTO END
+cls
+echo =======IP Config Tool======= & echo.[1] DHCP & echo.[2] Fix IP & echo.[3] Office IP
+choice /N /C:123 /M "choose a number... : "%2
+if errorlevel ==3 goto THREE
+if errorlevel ==2 goto TWO
+if errorlevel ==1 goto ONE
+goto END
 :THREE
-ECHO YOU HAVE PRESSED THREE
+netsh int ipv4 set address name="Ethernet" source=static address=199.168.50.154 mask=255.255.255.0 gateway=199.168.50.1
+netsh interface ipv4 add dns "Ethernet" address=8.8.8.8 index=1
+netsh interface ipv4 add dns "Ethernet" address=8.8.4.4 index=2
 GOTO END
 :TWO
-ECHO YOU HAVE PRESSED TWO
+set /p IP=Enter IP Address: 
+set /p Subnet=Enter Subnet mask: 
+set /p Gateway=Enter Gateway IP Address: 
+netsh int ipv4 set address name="Ethernet" source=static address=%IP% mask=%Subnet% gateway=%Gateway%
+netsh interface ipv4 add dns "Ethernet" address=8.8.8.8 index=1
+netsh interface ipv4 add dns "Ethernet" address=8.8.4.4 index=2
 GOTO END
 :ONE
-ECHO YOU HAVE PRESSED ONE
+netsh interface ip set address "Ethernet" dhcp
+netsh interface ip set dns "Ethernet" dhcp
 :END
 pause

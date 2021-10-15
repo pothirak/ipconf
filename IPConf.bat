@@ -1,9 +1,9 @@
 :: Configure
-set office_ip=199.168.50.154
-set office_gateway=199.168.50.1
-set office_mask=255.255.255.0
-set office_dns=8.8.8.8
-set office_dns2=8.8.4.4
+set office_ip=
+set office_gateway=
+set office_mask=
+set office_dns=
+set office_dns2=
 ::
 
 if not "%1"=="am_admin" (powershell start -verb runas '%0' am_admin & exit /b)
